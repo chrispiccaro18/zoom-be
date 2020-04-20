@@ -1,5 +1,3 @@
- 
-require('../connect-db');
 const Token = require('../../lib/models/Token');
 
 describe('Token model tests', () => {

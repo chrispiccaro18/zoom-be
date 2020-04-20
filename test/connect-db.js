@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
 
 beforeAll(() => {
-  return connect();
+  return connect(process.env.MONGODB_URI_TEST);
 });
 
 beforeEach(() => {
