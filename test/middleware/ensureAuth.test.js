@@ -2,10 +2,15 @@ require('../connect-db');
 const Token = require('../../lib/models/Token');
 const ensureAuth = require('../../lib/middleware/ensureAuth');
 
-jest.mock('../../lib/services/zoom-auth-api/getRefreshToken.js', () => (code, tokenInfo) => {
+jest.mock('../../lib/services/zoom-auth-api/getRefreshToken.js', () => () => {
   return {
-    ...tokenInfo,
-    access_token: 'another long ass string',
+    body: {
+      expires_in: 3599,
+      scope: 'string list of roles',
+      access_token: 'another long ass string',
+      refresh_token: 'a new long ass string',
+      token_type: 'bearer',
+    }
   };
 });
 
@@ -53,5 +58,17 @@ describe('ensureAuth middleware', () => {
     const req = { body: { code: '1233' } };
     await ensureAuth(req, {}, mockNext);
     expect(req.token).toBe('another long ass string');
+    const updatedToken = await Token.findById('1233');
+    expect(updatedToken.toJSON()).toEqual({
+      _id: '1233',
+      code: '1233',
+      access_token: 'another long ass string',
+      refresh_token: 'a new long ass string',
+      expires_at: expect.any(Number),
+      expires_in: 3599,
+      scope: 'string list of roles',
+      token_type: 'bearer',
+      __v: 0,
+    });
   });
 });
