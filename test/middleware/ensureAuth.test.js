@@ -2,7 +2,7 @@ require('../connect-db');
 const Token = require('../../lib/models/Token');
 const ensureAuth = require('../../lib/middleware/ensureAuth');
 
-jest.mock('../../lib/middleware/getRefreshToken.js', () => (code, tokenInfo) => {
+jest.mock('../../lib/services/zoom-auth-api/getRefreshToken.js', () => (code, tokenInfo) => {
   return {
     ...tokenInfo,
     access_token: 'another long ass string',
